@@ -17,7 +17,7 @@ fi
 
 if [[ "$(docker ps -aq --filter name=$CONTAINER_NAME 2> /dev/null)" != "" ]]; then
     echo "$LINE_PREFIX Removing '$CONTAINER_NAME' container"
-    docker rm $CONTAINER_NAME
+    docker rm -v $CONTAINER_NAME
 else
     echo "$LINE_PREFIX '$CONTAINER_NAME' container does not exist"
 fi
