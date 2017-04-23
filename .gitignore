@@ -1,3 +1,4 @@
 /contacts/~$us-500.xlsx
 /.idea
 /docker/percona/us-500.sql
+/docker/mongo/us-500.mongo.js
