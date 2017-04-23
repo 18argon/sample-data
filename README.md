@@ -8,7 +8,7 @@ US Contacts from [Brian Dunning Sample Data](https://www.briandunning.com/sample
 
 ### Docker images
 
-#### Percona
+#### Percona: docker/percona
 
 Create a derived [Percona Server](https://www.percona.com/software/mysql-database/percona-server) docker image containing an initialized `test.contacts` table.
 
@@ -22,7 +22,7 @@ After `build.sh` and `run.sh`, you can connect to Percona Server on `localhost:3
 
 ### Import scripts
 
-#### Mongo contacts/mongo.import
+#### Mongo: contacts/us-500.mongoimport
 
 ```
 $ cd contacts
@@ -32,7 +32,7 @@ $ mongoimport --db=test --collection=contacts --drop --file=us-500.mongo
 2016-03-03T18:45:40.971-0600	imported 500 documents
 ```
 
-#### MySQL contacts/mysql.sql
+#### MySQL: contacts/us-500.mysql.sql
 
 1. Right click on the target schema (test?) and choose `Set as Default Schema`
 1. Paste into a Query window
@@ -41,7 +41,7 @@ $ mongoimport --db=test --collection=contacts --drop --file=us-500.mongo
 OR
 
 1. From MySQL Workbench, Menu Server -> Data Import
-1. Select Import from Self-Contained File: select `mysql.sql`
+1. Select Import from Self-Contained File: select `us-500.mysql.sql`
 1. Default Target Schema: test
 1. Click: Start Import
 
