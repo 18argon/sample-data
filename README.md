@@ -6,6 +6,20 @@ A repo that contains publicly available data with import scripts into various da
 
 US Contacts from [Brian Dunning Sample Data](https://www.briandunning.com/sample-data/). 500 contacts for free, much more for a nominal price.
 
+### Docker images
+
+#### Percona
+
+Create a derived [Percona Server](https://www.percona.com/software/mysql-database/percona-server) docker image containing an initialized `test.contacts` table.
+
+Scripts are provided for:
+
+* `build.sh`: build the docker image
+* `run.sh`: create/start a container from the new image
+* `teardown.sh`: stop the container and remove the container/image
+
+After `build.sh` and `run.sh`, you can connect to Percona Server on `localhost:3306` with `test`/`test` or `root`/`root`.
+
 ### Import scripts
 
 #### Mongo contacts/mongo.import
