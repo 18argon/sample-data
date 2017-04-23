@@ -14,9 +14,9 @@ Create a derived [MongoDB docker image](https://hub.docker.com/_/mongo/) contain
 
 Scripts are provided in `docker/` for:
 
-* `./build.sh mongo`: build the docker image
-* `./run.sh mongo`: create/start a container from the new image
-* `./teardown.sh mongo`: stop the container and remove the container/image
+* `./build.sh build mongo`: build the docker image
+* `./build.sh run mongo`: create/start a container from the new image
+* `./build.sh teardown mongo`: stop the container and remove the container/image
 
 After `build.sh` and `run.sh`, you can connect to MongoDB on `localhost:27017` using [mongo-express](https://github.com/mongo-express/mongo-express) or, to the mongo shell in the docker container with:
 
@@ -59,11 +59,11 @@ Create a derived [Percona Server](https://www.percona.com/software/mysql-databas
 
 Scripts are provided in `docker/` for:
 
-* `./build.sh percona`: build the docker image
-* `./run.sh percona`: create/start a container from the new image
-* `./teardown.sh percona`: stop the container and remove the container/image
+* `./build.sh build percona`: build the docker image
+* `./build.sh run percona`: create/start a container from the new image
+* `./build.sh teardown percona`: stop the container and remove the container/image
 
-After `build.sh` and `run.sh`, you can connect to Percona Server on `localhost:3306` with `test`/`test` or `root`/`root`.
+After build and run, you can connect to Percona Server on `localhost:3306` with `test`/`test` or `root`/`root`.
 
 ### Import scripts
 
