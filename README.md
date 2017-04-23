@@ -12,11 +12,11 @@ US Contacts from [Brian Dunning Sample Data](https://www.briandunning.com/sample
 
 Create a derived [MongoDB docker image](https://hub.docker.com/_/mongo/) containing an initialized `test.contacts` collection.
 
-Scripts are provided for:
+Scripts are provided in `docker/` for:
 
-* `build.sh`: build the docker image
-* `run.sh`: create/start a container from the new image
-* `teardown.sh`: stop the container and remove the container/image
+* `./build.sh mongo`: build the docker image
+* `./run.sh mongo`: create/start a container from the new image
+* `./teardown.sh mongo`: stop the container and remove the container/image
 
 After `build.sh` and `run.sh`, you can connect to MongoDB on `localhost:27017` using [mongo-express](https://github.com/mongo-express/mongo-express) or, to the mongo shell in the docker container with:
 
@@ -57,11 +57,11 @@ bye
 
 Create a derived [Percona Server](https://www.percona.com/software/mysql-database/percona-server) [docker image](https://hub.docker.com/_/percona/) containing an initialized `test.contacts` table.
 
-Scripts are provided for:
+Scripts are provided in `docker/` for:
 
-* `build.sh`: build the docker image
-* `run.sh`: create/start a container from the new image
-* `teardown.sh`: stop the container and remove the container/image
+* `./build.sh percona`: build the docker image
+* `./run.sh percona`: create/start a container from the new image
+* `./teardown.sh percona`: stop the container and remove the container/image
 
 After `build.sh` and `run.sh`, you can connect to Percona Server on `localhost:3306` with `test`/`test` or `root`/`root`.
 
@@ -71,7 +71,7 @@ After `build.sh` and `run.sh`, you can connect to Percona Server on `localhost:3
 
 ```shell
 $ cd contacts
-$ mongoimport --db=test --collection=contacts --drop --file=us-500.mongo
+$ mongoimport --db=test --collection=contacts --drop --file=us-500.mongoimport
 2016-03-03T18:45:40.935-0600	connected to: localhost
 2016-03-03T18:45:40.935-0600	dropping: test.contacts
 2016-03-03T18:45:40.971-0600	imported 500 documents
