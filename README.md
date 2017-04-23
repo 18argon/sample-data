@@ -47,11 +47,3 @@ OR
 
 Refresh the target schema
 
-#### Orchestrate contacts/us-500.orchestrate.sh
-
-```
-$ export USER=<$spi_key>
-$ export PASS=<$password>
-$ export COLLECTION=contacts
-$ ./us-500.orchestrate.sh
-```
