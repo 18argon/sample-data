@@ -11,3 +11,5 @@ cp ../../contacts/us-500.mongo.js .
 echo "$LINE_PREFIX Building '$IMAGE_NAME'"
 docker build -t $IMAGE_NAME .
 
+echo "$LINE_PREFIX Removing temporary build files"
+rm us-500.mongo.js
