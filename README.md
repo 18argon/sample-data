@@ -8,6 +8,25 @@ US Contacts from [Brian Dunning Sample Data](https://www.briandunning.com/sample
 
 ### Docker images
 
+#### ElasticSearch: docker/elasticsearch
+
+Create a derived [ElasticSearch docker image](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html) containing an initialized `contacts` index.
+
+This involves some monkey patching to the ES start script `es-docker` since no facilities are provided to initialize ES with data. `es-docker` will contain a line `(/seed-data/data-load.sh &)` which spawns a process that sleeps for 60s, checks if the `contacts` index exists, and if not, index the contacts data.
+
+Scripts are provided in `docker/` for:
+
+* `./build.sh build elasticsearch`: build the docker image
+* `./build.sh run elasticsearch `: create/start a container from the new image
+* `./build.sh teardown elasticsearch `: stop the container and remove the container/image
+
+After `build.sh` and `run.sh`, you can connect to ES using creds `elastic`/`changeme` via curl or browser.
+
+* browser: [http://elastic:changeme@localhost:9200/contacts/_search?pretty=true&q=\*:\*](http://elastic:changeme@localhost:9200/contacts/_search?pretty=true&q=*:*)
+* curl: `curl elastic:changeme@localhost:9200/contacts/_search\?pretty\=true\&q\=\*:\*`
+
+**NOTE**: As of ES 5, [site plugins are no longer supported](https://www.elastic.co/blog/running-site-plugins-with-elasticsearch-5-0). This means that the very useful `head`, `kopf`, `marvel` plugins cannot run in ES 5; the x-pack `monitoring` replacement for `marvel` is installed but requires a kibana deployment pointing at this container to display the dashboards. 
+
 #### Mongo: docker/mongo
 
 Create a derived [MongoDB docker image](https://hub.docker.com/_/mongo/) containing an initialized `test.contacts` collection.
@@ -67,6 +86,16 @@ After build and run, you can connect to Percona Server on `localhost:3306` with 
 
 ### Import scripts
 
+#### ElasticSearch: contacts/us-500.elasticsearch
+
+```shell
+$ cd contacts
+$ curl -s -H "Content-Type: application/x-ndjson" \
+    -XPOST "elastic:changeme@localhost:9200/_bulk" --data-binary "@us-500.elasticsearch"
+{"took":96,"errors":false,"items":[{"index":{"_index":"contacts","_type":
+# remaining output truncated
+```
+
 #### Mongo: contacts/us-500.mongoimport
 
 ```shell
@@ -89,13 +118,15 @@ MongoDB server version: 3.4.2
 
 #### MySQL: contacts/us-500.mysql.sql
 
+From MySQL Workbench: 
+
 1. Right click on the target schema (test?) and choose `Set as Default Schema`
 1. Paste into a Query window
 1. Execute
 
 OR
 
-1. From MySQL Workbench, Menu Server -> Data Import
+1. Menu Server -> Data Import
 1. Select Import from Self-Contained File: select `us-500.mysql.sql`
 1. Default Target Schema: test
 1. Click: Start Import

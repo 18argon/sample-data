@@ -7,7 +7,9 @@ OPERATION=$1
 PRODUCT_DIR=$2
 
 showHelp() {
-    echo "Use: ./build.sh [build | run | teardown] [mongo | percona]"
+    echo "Use: ./build.sh CMD TARGET"
+    echo "    CMD    = build | run | teardown"
+    echo "    TARGET = mongo | percona | elasticsearch"
 }
 
 # Arg validation
@@ -61,9 +63,15 @@ case $OPERATION in
         # Delete any existing images
         if [[ "$(docker images -q $IMAGE_NAME 2> /dev/null)" != "" ]]; then
             echo "$ECHO_PREFIX Removing '$IMAGE_NAME' image"
-            docker rmi $IMAGE_NAME
+            docker rmi -f $IMAGE_NAME
         else
             echo "$ECHO_PREFIX '$IMAGE_NAME' image does not exist"
+        fi
+
+        # Delete any orphaned (dangling) images
+        if [[ "$(docker images -q -f dangling=true 2> /dev/null)" != "" ]]; then
+            echo "$ECHO_PREFIX Removing dangling images"
+            docker rmi -f $(docker images -q -f dangling=true)
         fi
         ;;
 esac
