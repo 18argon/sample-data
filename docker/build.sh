@@ -9,7 +9,7 @@ PRODUCT_DIR=$2
 showHelp() {
     echo "Use: ./build.sh CMD TARGET"
     echo "    CMD    = build | run | teardown"
-    echo "    TARGET = mongo | percona | elasticsearch"
+    echo "    TARGET = elasticsearch | mongo | percona | rethink"
 }
 
 # Arg validation

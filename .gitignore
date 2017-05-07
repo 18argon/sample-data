@@ -2,3 +2,4 @@
 /.idea
 /docker/percona/us-500.sql
 /docker/mongo/us-500.mongo.js
+/docker/rethink/data/

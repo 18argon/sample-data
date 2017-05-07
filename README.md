@@ -10,7 +10,7 @@ US Contacts from [Brian Dunning Sample Data](https://www.briandunning.com/sample
 
 #### ElasticSearch: docker/elasticsearch
 
-Create a derived [ElasticSearch docker image](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html) containing an initialized `contacts` index.
+Create a derived [ElasticSearch docker image](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html) containing an initialized `contacts` index stored in a docker volume.
 
 This involves some monkey patching to the ES start script `es-docker` since no facilities are provided to initialize ES with data. `es-docker` will contain a line `(/seed-data/data-load.sh &)` which spawns a process that sleeps for 60s, checks if the `contacts` index exists, and if not, index the contacts data.
 
@@ -20,7 +20,7 @@ Scripts are provided in `docker/` for:
 * `./build.sh run elasticsearch `: create/start a container from the new image
 * `./build.sh teardown elasticsearch `: stop the container and remove the container/image
 
-After `build.sh` and `run.sh`, you can connect to ES using creds `elastic`/`changeme` via curl or browser.
+After build and run, you can connect to ES using creds `elastic`/`changeme` via curl or browser.
 
 * browser: [http://elastic:changeme@localhost:9200/contacts/_search?pretty=true&q=\*:\*](http://elastic:changeme@localhost:9200/contacts/_search?pretty=true&q=*:*)
 * curl: `curl elastic:changeme@localhost:9200/contacts/_search\?pretty\=true\&q\=\*:\*`
@@ -29,7 +29,7 @@ After `build.sh` and `run.sh`, you can connect to ES using creds `elastic`/`chan
 
 #### Mongo: docker/mongo
 
-Create a derived [MongoDB docker image](https://hub.docker.com/_/mongo/) containing an initialized `test.contacts` collection.
+Create a derived [MongoDB docker image](https://hub.docker.com/_/mongo/) containing an initialized `test.contacts` collection stored in a docker volulme.
 
 Scripts are provided in `docker/` for:
 
@@ -37,7 +37,7 @@ Scripts are provided in `docker/` for:
 * `./build.sh run mongo`: create/start a container from the new image
 * `./build.sh teardown mongo`: stop the container and remove the container/image
 
-After `build.sh` and `run.sh`, you can connect to MongoDB on `localhost:27017` using [mongo-express](https://github.com/mongo-express/mongo-express) or, to the mongo shell in the docker container with:
+After build and run, you can connect to MongoDB on `localhost:27017` using [mongo-express](https://github.com/mongo-express/mongo-express) or, to the mongo shell in the docker container with:
 
 ```shell
 $ docker run -it \
@@ -74,7 +74,7 @@ bye
 
 #### Percona: docker/percona
 
-Create a derived [Percona Server](https://www.percona.com/software/mysql-database/percona-server) [docker image](https://hub.docker.com/_/percona/) containing an initialized `test.contacts` table.
+Create a derived [Percona Server](https://www.percona.com/software/mysql-database/percona-server) [docker image](https://hub.docker.com/_/percona/) containing an initialized `test.contacts` table with all data stored in a docker volume.
 
 Scripts are provided in `docker/` for:
 
@@ -83,6 +83,24 @@ Scripts are provided in `docker/` for:
 * `./build.sh teardown percona`: stop the container and remove the container/image
 
 After build and run, you can connect to Percona Server on `localhost:3306` with `test`/`test` or `root`/`root`.
+
+
+#### RethinkDB: docker/rethink
+
+Create a derived [RethinkDB](https://www.rethinkdb.com/) [docker image](https://hub.docker.com/_/rethinkdb/) containing an initialized `test.contacts` collection in a docker volume.
+
+Scripts are provided in `docker/` for:
+
+* `./build.sh build rethink`: build the docker image
+* `./build.sh run rethink`: create/start a container from the new image
+* `./build.sh teardown rethink`: stop the container and remove the container/image
+
+After build and run, you can connect to the RethinkDB web ui at [http://localhost:8080/](http://localhost:8080/)
+
+RethinkDB does not provide database initialization support. We could use RethinkDB's [bulk import support](https://www.rethinkdb.com/docs/importing/) and monkey-patch a docker-entrypoint.sh into the base image, but that requires installing python, pip, and the RethinkDB python driver increasing image size from 183MB to 256MB.
+
+Instead, the build process creates a temp container with a mounted `/data` volume, installs required packages, and imports the contacts. Then, when building the final image, the temp container's `/data` is copied into the final image. The final image is a bit slimmer at 199MB.
+
 
 ### Import scripts
 
@@ -115,6 +133,25 @@ MongoDB shell version v3.4.2
 connecting to: mongodb://127.0.0.1:27017/test
 MongoDB server version: 3.4.2
 ```
+
+#### RethinkDB: contacts/us-500.json
+
+RethinkDB provides for [bulk imports](https://www.rethinkdb.com/docs/importing/): you will need python and pip installed and the RethinkDB python driver.
+
+```shell
+$ pip install rethinkdb
+# ...
+
+$ cd contacts
+$ rethinkdb import -f /tmp/seed-data.json --table test.contacts
+no primary key specified, using default primary key when creating table
+[========================================] 100% 
+500 rows imported in 1 table
+  Done (0 seconds)
+```
+
+
+
 
 #### MySQL: contacts/us-500.mysql.sql
 
