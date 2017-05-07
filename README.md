@@ -12,8 +12,6 @@ US Contacts from [Brian Dunning Sample Data](https://www.briandunning.com/sample
 
 Create a derived [ElasticSearch docker image](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html) containing an initialized `contacts` index stored in a docker volume.
 
-This involves some monkey patching to the ES start script `es-docker` since no facilities are provided to initialize ES with data. `es-docker` will contain a line `(/seed-data/data-load.sh &)` which spawns a process that sleeps for 60s, checks if the `contacts` index exists, and if not, index the contacts data.
-
 Scripts are provided in `docker/` for:
 
 * `./build.sh build elasticsearch`: build the docker image
@@ -25,7 +23,10 @@ After build and run, you can connect to ES using creds `elastic`/`changeme` via 
 * browser: [http://elastic:changeme@localhost:9200/contacts/_search?pretty=true&q=\*:\*](http://elastic:changeme@localhost:9200/contacts/_search?pretty=true&q=*:*)
 * curl: `curl elastic:changeme@localhost:9200/contacts/_search\?pretty\=true\&q\=\*:\*`
 
-**NOTE**: As of ES 5, [site plugins are no longer supported](https://www.elastic.co/blog/running-site-plugins-with-elasticsearch-5-0). This means that the very useful `head`, `kopf`, `marvel` plugins cannot run in ES 5; the x-pack `monitoring` replacement for `marvel` is installed but requires a kibana deployment pointing at this container to display the dashboards. 
+This build monkey-patches the ES start script `es-docker` since no facilities are provided to initialize ES with data. `es-docker` will contain a line `(/seed-data/data-load.sh &)` which spawns a process that sleeps for 60s, checks if the `contacts` index exists, and if not, index the contacts data.
+
+**NOTE**: As of ES 5, [site plugins are no longer supported](https://www.elastic.co/blog/running-site-plugins-with-elasticsearch-5-0). This means that the very useful `head`, `kopf`, `marvel` plugins cannot run in ES 5; the x-pack `monitoring` replacement for `marvel` is installed but requires a kibana deployment pointing at this container to display the dashboards. IOW: there is no web ui for this ES container.
+
 
 #### Mongo: docker/mongo
 
