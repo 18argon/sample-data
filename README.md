@@ -152,8 +152,6 @@ no primary key specified, using default primary key when creating table
 ```
 
 
-
-
 #### MySQL: contacts/us-500.mysql.sql
 
 From MySQL Workbench: 
@@ -171,3 +169,7 @@ OR
 
 Refresh the target schema
 
+## TODO
+
+* Provide revisions on our derived image tags
+* Add support for pushing images to docker hub
