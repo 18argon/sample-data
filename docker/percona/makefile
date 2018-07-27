@@ -22,5 +22,7 @@ seed-data.sql: ../../contacts/us-500.mysql.sql
 	@cat test-schema.sql $< > seed-data.sql
 
 # I am a pre-req to 'build' and perform all pre-build operations
-setup: seed-data.sql
+setup_local: seed-data.sql
 
+# I am a pre-req to 'test' and perform all testing on a running container
+test_local:

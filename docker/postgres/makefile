@@ -8,20 +8,23 @@ include ../common.mk
 
 # Common functionality depends on defining the following
 # IMAGE_VER should match the base percona docker image version in Dockerfile
-IMAGE_VER := 5.4
-IMAGE_NAME := elasticsearch-sample-data
+IMAGE_VER := 10.4-alpine
+IMAGE_NAME := postgres-sample-data
 IMAGE := stevetarver/$(IMAGE_NAME):$(IMAGE_VER)
-RUN_ARGS := -p 9200:9200 -p 9300:9300 -e "http.host=0.0.0.0" -e "transport.host=127.0.0.1"
+RUN_ARGS := -p 5432:5432 -e POSTGRES_PASSWORD=postgres
 
 # I am a pre-req to 'clean' and perform non-docker cleanup
 clean_local:
-	@rm -f seed-data.json
-
-seed-data.json: ../../contacts/us-500.elasticsearch
-	cp $< seed-data.json
 
 # I am a pre-req to 'build' and perform all pre-build operations
-setup_local: seed-data.json
+setup_local:
 
 # I am a pre-req to 'test' and perform all testing on a running container
 test_local:
+	$(eval ROW_COUNT := $(shell docker exec -it $(IMAGE_NAME) psql -t -U postgres -d test -c 'SELECT COUNT(*) FROM contacts;'))
+	@if [ "$(ROW_COUNT)" == "500" ]; then \
+		echo "===> $(IMAGE_NAME) has the correct row count ($(ROW_COUNT))"; \
+	else \
+		echo "===> $(IMAGE_NAME) does not have the correct row count ($(ROW_COUNT))"; \
+		exit 2; \
+	fi

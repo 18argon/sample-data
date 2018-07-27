@@ -30,7 +30,7 @@ seed-data.json: ../../contacts/us-500.json
 # I will create a temp rethink container, install packages to import data,
 # import that data, stop and remove that container. All of this creates a
 # seeded data dir that we copy into the docker image during build
-setup: seed-data.json
+setup_local: seed-data.json
 	@echo "===> Creating temp rethink container '$(TMP_CTNR)'"
 	@rm -rf data
 	@mkdir data
@@ -51,3 +51,6 @@ setup: seed-data.json
 
 	@# groom data dir: remove data dir log file and tmp dir
 	@rm -rf data/rethinkdb_data/tmp data/rethinkdb_data/log_file
+
+# I am a pre-req to 'test' and perform all testing on a running container
+test_local:
