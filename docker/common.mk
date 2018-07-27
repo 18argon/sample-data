@@ -16,11 +16,11 @@ build: setup ## build the docker image
 
 clean: stop clean_local ## remove all build artifacts
 	@if [ -n "$$(docker ps -aq --filter name=$(IMAGE_NAME) 2> /dev/null)" ]; then \
-		echo "==> Removing container $(IMAGE_NAME)"; \
+		echo "===> Removing container $(IMAGE_NAME)"; \
 		docker rm -v $(IMAGE_NAME); \
 	fi;
 	@if [ -n "$$(docker images -q $(IMAGE) 2> /dev/null)" ]; then \
-		echo "==> Removing image $(IMAGE)"; \
+		echo "===> Removing image $(IMAGE)"; \
 		docker rmi -f $(IMAGE); \
 	fi;
 
@@ -39,7 +39,7 @@ run: ## run the docker image
 .PHONY: stop
 stop: ## stop the container
 	@if [ -n "$$(docker ps | grep $(IMAGE_NAME))" ]; then \
-		echo "==> Stopping container $(IMAGE_NAME)"; \
+		echo "===> Stopping container $(IMAGE_NAME)"; \
 		docker stop $(IMAGE_NAME); \
 	fi;
 
