@@ -16,6 +16,7 @@ RUN_ARGS := -p 8080:8080 -p 28015:28015 -p 29015:29015
 TMP_CTNR := rethink-temp
 
 # I am a pre-req to 'clean' and perform non-docker cleanup
+.PHONY: clean_local
 clean_local:
 	@rm -rf data get-pip* seed-data.json
 	@if [ -n "$$(docker ps -aq --filter name=$(TMP_CTNR) 2> /dev/null)" ]; then \
@@ -23,16 +24,11 @@ clean_local:
 		docker rm -f -v $(TMP_CTNR); \
 	fi;
 
-seed-data.json: ../../contacts/us-500.json
-	@cp $< seed-data.json
-
-# I am a pre-req to 'build' and perform all pre-build operations
 # I will create a temp rethink container, install packages to import data,
 # import that data, stop and remove that container. All of this creates a
 # seeded data dir that we copy into the docker image during build
-setup_local: seed-data.json
+data:
 	@echo "===> Creating temp rethink container '$(TMP_CTNR)'"
-	@rm -rf data
 	@mkdir data
 	@docker run -d --name $(TMP_CTNR)   \
 		-v $$(pwd)/data:/data           \
@@ -52,5 +48,23 @@ setup_local: seed-data.json
 	@# groom data dir: remove data dir log file and tmp dir
 	@rm -rf data/rethinkdb_data/tmp data/rethinkdb_data/log_file
 
+seed-data.json: ../../contacts/us-500.json
+	@echo "===> Creating seed data"
+	@cp $< seed-data.json
+
+# I am a pre-req to 'build' and perform all pre-build operations
+setup_local: seed-data.json data
+
 # I am a pre-req to 'test' and perform all testing on the provided, running container
+# NOTE: requires recli: npm install -g recli
+.PHONY: test_local
 test_local:
+	@echo "===> Testing data doc count is correct"
+	$(eval ROW_COUNT := $(shell recli -r 'r.table("contacts").count()'))
+
+	@if [ "$(ROW_COUNT)" == "500" ]; then \
+		echo "     $(IMAGE_NAME) has the correct row count ($(ROW_COUNT))"; \
+	else \
+		echo "===> ERROR: $(IMAGE_NAME) does not have the correct row count. Expected: '500', Actual: '$(ROW_COUNT)'"; \
+		exit 2; \
+	fi

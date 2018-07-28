@@ -1,6 +1,6 @@
 /contacts/~$us-500.xlsx
 /.idea
-/docker/percona/us-500.sql
 /docker/rethink/data/
 /docker/percona/seed-data.sql
 /docker/rethink/seed-data.json
+/docker/rethink/get-pip.py

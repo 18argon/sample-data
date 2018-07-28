@@ -14,12 +14,15 @@ IMAGE := stevetarver/$(IMAGE_NAME):$(IMAGE_VER)
 RUN_ARGS := -p 9200:9200 -p 9300:9300 -e "http.host=0.0.0.0" -e "transport.host=127.0.0.1"
 
 # I am a pre-req to 'clean' and perform non-docker cleanup
+.PHONY: clean_local
 clean_local:
 
 # I am a pre-req to 'build' and perform all pre-build operations
+.PHONY setup_local
 setup_local:
 
 # I am a pre-req to 'test' and perform all testing on the provided, running container
+.PHONY: test_local
 test_local:
 	@echo "===> Testing data row count is correct"
 	$(eval ROW_COUNT := $(shell curl -s elastic:changeme@localhost:9200/_cat/count/contacts))

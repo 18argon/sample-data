@@ -14,6 +14,7 @@ IMAGE := stevetarver/$(IMAGE_NAME):$(IMAGE_VER)
 RUN_ARGS := -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root
 
 # I am a pre-req to 'clean' and perform non-docker cleanup
+.PHONY: clean_local
 clean_local:
 	@rm -f seed-data.sql
 
@@ -25,6 +26,7 @@ seed-data.sql: ../../contacts/us-500.mysql.sql
 setup_local: seed-data.sql
 
 # I am a pre-req to 'test' and perform all testing on the provided, running container
+.PHONY: test_local
 test_local:
 	@echo "===> Testing data row count is correct"
 	$(eval ROW_COUNT := $(shell docker exec -it $(IMAGE_NAME) mysql -uroot -proot -Dtest -s --skip-column-names -e 'SELECT COUNT(*) from test.contacts;'))

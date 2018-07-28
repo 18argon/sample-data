@@ -18,12 +18,15 @@ IMAGE := stevetarver/$(IMAGE_NAME):$(IMAGE_VER)
 RUN_ARGS := -p 27017:27017
 
 # I am a pre-req to 'clean' and perform non-docker cleanup
+.PHONY: clean_local
 clean_local:
 
 # I am a pre-req to 'build' and perform all pre-build operations
+.PHONY setup_local
 setup_local:
 
 # I am a pre-req to 'test' and perform all testing on the provided, running container
+.PHONY: test_local
 test_local:
 	@echo "===> Testing data doc count is correct"
 	$(eval ROW_COUNT := $(shell docker exec -it $(IMAGE_NAME) mongo test --quiet --eval 'db.contacts.count();'))
