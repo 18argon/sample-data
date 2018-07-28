@@ -1,7 +1,6 @@
 /contacts/~$us-500.xlsx
 /.idea
 /docker/percona/us-500.sql
-/docker/mongo/us-500.mongo.js
 /docker/rethink/data/
 /docker/percona/seed-data.sql
 /docker/rethink/seed-data.json

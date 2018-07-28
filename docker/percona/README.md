@@ -21,7 +21,7 @@ After build and run, you can connect to Percona Server on `localhost:3306` with 
 docker run -d --name percona-sample-data \
     -p 3306:3306 \
     -e MYSQL_ROOT_PASSWORD=root \
-    stevetarver/percona-sample-data:5.7-r0
+    stevetarver/percona-sample-data:5.7
 ```
 
 ## Fetch data from command line
