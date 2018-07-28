@@ -1,3 +1,3 @@
-FROM percona:5.7
+FROM mariadb:10.3.8-bionic
 
 COPY seed-data.sql /docker-entrypoint-initdb.d/

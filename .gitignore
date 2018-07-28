@@ -3,4 +3,5 @@
 /docker/rethink/data/
 /docker/percona/seed-data.sql
 /docker/rethink/seed-data.json
-/docker/rethink/get-pip.py
+/docker/rethink/get-pip*
+/docker/mariadb/seed-data.sql

@@ -4,12 +4,14 @@
 #   implement the setup target
 #   implement the clean_local target
 #
+# NOTE: this makefile should be kept in sync with percona
+#
 include ../common.mk
 
 # Common functionality depends on defining the following
 # IMAGE_VER should match the base percona docker image version in Dockerfile
-IMAGE_VER := 5.7
-IMAGE_NAME := percona-sample-data
+IMAGE_VER := 10.3.8-bionic
+IMAGE_NAME := mariadb-sample-data
 IMAGE := stevetarver/$(IMAGE_NAME):$(IMAGE_VER)
 RUN_ARGS := -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root
 
