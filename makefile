@@ -1,19 +1,22 @@
 # global operations for docker images
 
-TARGETS = 	docker/elasticsearch \
-			docker/mongo \
-			docker/percona \
-			docker/postgres \
-			docker/rethink
+# NOTE: final '.' excludes the 'docker' dir itself
+TARGETS := $(sort $(dir $(wildcard docker/*/.)))
 
 .PHONY: all
 all:
-	@for dir in $(TARGETS); do \
-		$(MAKE) -C $$dir all; \
+	@for DIR in $(TARGETS); do  \
+		if [ -f $$DIR/makefile ]; then \
+			echo "Cleaning $$DIR";  \
+			$(MAKE) -C $$DIR all; \
+		fi \
 	done
 
 .PHONY: clean
 clean:
-	@for dir in $(TARGETS); do \
-		$(MAKE) -C $$dir clean; \
+	@for DIR in $(TARGETS); do  \
+		if [ -f $$DIR/makefile ]; then \
+			echo "Cleaning $$DIR";  \
+			$(MAKE) -C $$DIR clean; \
+		fi \
 	done

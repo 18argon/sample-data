@@ -18,7 +18,7 @@ RUN_ARGS := -p 9200:9200 -p 9300:9300 -e "http.host=0.0.0.0" -e "transport.host=
 clean_local:
 
 # I am a pre-req to 'build' and perform all pre-build operations
-.PHONY setup_local
+.PHONY: setup_local
 setup_local:
 
 # I am a pre-req to 'test' and perform all testing on the provided, running container

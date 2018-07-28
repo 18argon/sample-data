@@ -67,6 +67,7 @@ help:
 	@echo "Use: make [target]\n\ntarget:"
 	@grep -h "##" $(MAKEFILE_LIST) | grep -v "(help\|grep)" | grep -ve '^\t' | sort | sed -e "s/:.*## / - /" -e 's/^/  /'
 
+# Useful for debugging or quickly checking build artifacts
 .PHONY: ids
 ids:
 	@echo "get_image_id     : $(call get_image_id)"

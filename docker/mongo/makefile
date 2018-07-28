@@ -22,7 +22,7 @@ RUN_ARGS := -p 27017:27017
 clean_local:
 
 # I am a pre-req to 'build' and perform all pre-build operations
-.PHONY setup_local
+.PHONY: setup_local
 setup_local:
 
 # I am a pre-req to 'test' and perform all testing on the provided, running container

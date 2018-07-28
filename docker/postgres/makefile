@@ -18,7 +18,7 @@ RUN_ARGS := -p 5432:5432 -e POSTGRES_PASSWORD=postgres
 clean_local:
 
 # I am a pre-req to 'build' and perform all pre-build operations
-.PHONY setup_local
+.PHONY: setup_local
 setup_local:
 
 # I am a pre-req to 'test' and perform all testing on the provided, running container
