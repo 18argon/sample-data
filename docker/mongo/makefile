@@ -27,5 +27,5 @@ seed-data.js: ../../contacts/us-500.mongo.js
 # I am a pre-req to 'build' and perform all pre-build operations
 setup_local: seed-data.js
 
-# I am a pre-req to 'test' and perform all testing on a running container
+# I am a pre-req to 'test' and perform all testing on the provided, running container
 test_local:

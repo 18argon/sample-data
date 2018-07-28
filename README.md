@@ -1,12 +1,19 @@
-# Sample data
+## Sample data
 
-A repo that contains publicly available data with import scripts into various databases
+Derived database derived docker images seeded with sample data.
 
 ## Contacts
 
 US Contacts from [Brian Dunning Sample Data](https://www.briandunning.com/sample-data/). 500 contacts for free, much more for a nominal price.
 
-### Docker images
+## Docker images
+
+Docker images are built via local makefiles. See `make help` for more details.
+
+See each docker directory's README.md for more details.
+
+
+
 
 #### ElasticSearch: docker/elasticsearch
 
@@ -72,18 +79,6 @@ Welcome to the MongoDB shell.
 bye
 ```
 
-
-#### Percona: docker/percona
-
-Create a derived [Percona Server](https://www.percona.com/software/mysql-database/percona-server) [docker image](https://hub.docker.com/_/percona/) containing an initialized `test.contacts` table with all data stored in a docker volume.
-
-Scripts are provided in `docker/` for:
-
-* `./build.sh build percona`: build the docker image
-* `./build.sh run percona`: create/start a container from the new image
-* `./build.sh teardown percona`: stop the container and remove the container/image
-
-After build and run, you can connect to Percona Server on `localhost:3306` with `test`/`test` or `root`/`root`.
 
 
 #### RethinkDB: docker/rethink
@@ -152,24 +147,7 @@ no primary key specified, using default primary key when creating table
 ```
 
 
-#### MySQL: contacts/us-500.mysql.sql
-
-From MySQL Workbench: 
-
-1. Right click on the target schema (test?) and choose `Set as Default Schema`
-1. Paste into a Query window
-1. Execute
-
-OR
-
-1. Menu Server -> Data Import
-1. Select Import from Self-Contained File: select `us-500.mysql.sql`
-1. Default Target Schema: test
-1. Click: Start Import
-
-Refresh the target schema
 
 ## TODO
 
 * Provide revisions on our derived image tags
-* Add support for pushing images to docker hub

@@ -23,5 +23,5 @@ seed-data.json: ../../contacts/us-500.elasticsearch
 # I am a pre-req to 'build' and perform all pre-build operations
 setup_local: seed-data.json
 
-# I am a pre-req to 'test' and perform all testing on a running container
+# I am a pre-req to 'test' and perform all testing on the provided, running container
 test_local:

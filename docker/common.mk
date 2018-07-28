@@ -67,17 +67,26 @@ help:
 	@echo "Use: make [target]\n\ntarget:"
 	@grep -h "##" $(MAKEFILE_LIST) | grep -v "(help\|grep)" | grep -ve '^\t' | sort | sed -e "s/:.*## / - /" -e 's/^/  /'
 
+.PHONY: ids
+ids:
+	@echo "get_image_id     : $(call get_image_id)"
+	@echo "get_container_id : $(call get_container_id)"
+
 .PHONY: logs
 logs: ## show container logs
 	docker logs -f $(IMAGE_NAME)
 
 .PHONY: run
 run: build ## create and start a docker container (rm on exit)
-	docker run --rm --name $(IMAGE_NAME) $(RUN_ARGS) $(IMAGE)
+	@if [ -z "$(call get_container_id)" ]; then \
+		docker run --rm --name $(IMAGE_NAME) $(RUN_ARGS) $(IMAGE); \
+	fi
 
 .PHONY: rund
 rund: build ## create and start a docker container in detached mode (rm on exit)
-	docker run -d --rm --name $(IMAGE_NAME) $(RUN_ARGS) $(IMAGE)
+	@if [ -z "$(call get_container_id)" ]; then \
+		docker run -d --rm --name $(IMAGE_NAME) $(RUN_ARGS) $(IMAGE); \
+	fi
 
 .PHONY: start
 start: create ## start an existing docker container
@@ -89,7 +98,7 @@ start: create ## start an existing docker container
 	fi;
 
 .PHONY: test
-test: build test_local ## run test scripts against container
+test: build rund test_local ## run test scripts against container
 
 .PHONY: stop
 stop: ## stop a running container

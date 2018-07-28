@@ -52,5 +52,5 @@ setup_local: seed-data.json
 	@# groom data dir: remove data dir log file and tmp dir
 	@rm -rf data/rethinkdb_data/tmp data/rethinkdb_data/log_file
 
-# I am a pre-req to 'test' and perform all testing on a running container
+# I am a pre-req to 'test' and perform all testing on the provided, running container
 test_local:

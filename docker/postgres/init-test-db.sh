@@ -2,13 +2,16 @@
 set -e
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
-    CREATE USER test;
+    CREATE USER test WITH PASSWORD 'test';
     CREATE DATABASE test;
     GRANT ALL PRIVILEGES ON DATABASE test TO test;
+EOSQL
 
-    \connect test
+psql -v ON_ERROR_STOP=1 --username test --dbname test <<-EOSQL
+    CREATE SCHEMA test;
+    GRANT ALL ON ALL TABLES IN SCHEMA test to test;
 
-    CREATE TABLE contacts (
+    CREATE TABLE test.contacts (
       id SERIAL PRIMARY KEY,
       firstName VARCHAR(32) NOT NULL,
       lastName VARCHAR(32) NOT NULL,
@@ -25,6 +28,8 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
       created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
     );
+
+    SET search_path TO test;
 
     INSERT INTO contacts VALUES(1,'James','Butt','Benton, John B Jr','6649 N Blue Gum St','New Orleans','Orleans','LA','70116','504-621-8927','504-845-1427','jbutt@gmail.com','http://www.bentonjohnbjr.com',NOW(),NOW());
     INSERT INTO contacts VALUES(2,'Josephine','Darakjy','Chanay, Jeffrey A Esq','4 B Blue Ridge Blvd','Brighton','Livingston','MI','48116','810-292-9388','810-374-9840','josephine_darakjy@darakjy.org','http://www.chanayjeffreyaesq.com',NOW(),NOW());
