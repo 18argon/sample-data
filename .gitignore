@@ -5,3 +5,4 @@
 /docker/rethink/seed-data.json
 /docker/rethink/get-pip*
 /docker/mariadb/seed-data.sql
+/docker/mysql/seed-data.sql

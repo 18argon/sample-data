@@ -4,6 +4,8 @@
 #   implement the setup target
 #   implement the clean_local target
 #
+# NOTE: mariadb, mysql, and percona makefiles should be kept in sync
+#
 include ../common.mk
 
 # Common functionality depends on defining the following

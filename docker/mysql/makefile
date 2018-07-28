@@ -10,8 +10,8 @@ include ../common.mk
 
 # Common functionality depends on defining the following
 # IMAGE_VER should match the base percona docker image version in Dockerfile
-IMAGE_VER := 10.3.8-bionic
-IMAGE_NAME := mariadb-sample-data
+IMAGE_VER := 8.0.11
+IMAGE_NAME := mysql-sample-data
 IMAGE := stevetarver/$(IMAGE_NAME):$(IMAGE_VER)
 RUN_ARGS := -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root
 
