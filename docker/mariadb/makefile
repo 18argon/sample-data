@@ -15,6 +15,17 @@ IMAGE_NAME := mariadb-sample-data
 IMAGE := stevetarver/$(IMAGE_NAME):$(IMAGE_VER)
 RUN_ARGS := -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root
 
+# This grep expression matches the container log entry indicating the db is ready
+CTNR_READY_LOG_ENTRY := '^Version: .*3306'
+
+# execute select count(*) from contacts
+# NOTE: we use MYSQL_PWD to avoid parsing results that include:
+#   mysql: [Warning] Using a password on the command line interface can be insecure. 500
+# pass account/pass as first arg
+define get_row_count
+$(shell docker exec -it $(IMAGE_NAME) sh -c "export MYSQL_PWD=$(1) && mysql -u$(1) -Dtest -s --skip-column-names -e 'SELECT COUNT(*) from test.contacts;'")
+endef
+
 # I am a pre-req to 'clean' and perform non-docker cleanup
 .PHONY: clean_local
 clean_local:
@@ -22,7 +33,6 @@ clean_local:
 
 seed-data.sql: ../../contacts/us-500.mysql.sql
 	@cp $< seed-data.sql
-	@chmod 644 seed-data.sql
 
 # I am a pre-req to 'build' and perform all pre-build operations
 setup_local: seed-data.sql
@@ -30,28 +40,18 @@ setup_local: seed-data.sql
 # I am a pre-req to 'test' and perform all testing on the provided, running container
 .PHONY: test_local
 test_local:
+	$(call wait_till_container_log_contains,$(CTNR_READY_LOG_ENTRY))
+
 	@echo "===> Testing data row count is correct"
-	$(eval ROW_COUNT := $(shell docker exec -it $(IMAGE_NAME) mysql -uroot -proot -Dtest -s --skip-column-names -e 'SELECT COUNT(*) from test.contacts;'))
-
-	@# mysql prints a warning so our output looks like:
-	@#  mysql: [Warning] Using a password on the command line interface can be insecure. 500
-	@# we will sort the response and take the first word to capture row count
-	$(eval ROW_COUNT := $(word 1, $(sort $(ROW_COUNT))))
-
-	@if [ "$(ROW_COUNT)" == "500" ]; then \
-		echo "     $(IMAGE_NAME) has the correct row count ($(ROW_COUNT))"; \
-	else \
-		echo "===> ERROR: $(IMAGE_NAME) does not have the correct row count. Expected: '500', Actual: '$(ROW_COUNT)'"; \
+	@if [ "$(call get_row_count,root)" != "500" ]; then \
+		echo "===> ERROR: $(IMAGE_NAME) does not have the correct row count. SQL query returns:"; \
+		echo "     $(call get_row_count,root)"; \
 		exit 2; \
 	fi
 
 	@echo "===> Testing 'test' account access"
-	$(eval ROW_COUNT := $(shell docker exec -it $(IMAGE_NAME) mysql -utest -ptest -D test -s --skip-column-names -e 'SELECT COUNT(*) from test.contacts;'))
-	$(eval ROW_COUNT := $(word 1, $(sort $(ROW_COUNT))))
-
-	@if [ "$(ROW_COUNT)" == "500" ]; then \
-		echo "     $(IMAGE_NAME) allows 'test' account access to 'test' database"; \
-	else \
-		echo "===> ERROR: $(IMAGE_NAME) does not allows 'test' account access to 'test' database"; \
+	@if [ "$(call get_row_count,test)" != "500" ]; then \
+		echo "===> ERROR: $(IMAGE_NAME) does not allows 'test' account access to 'test' database. SQL query returns:"; \
+		echo "     $(call get_row_count,test)"; \
 		exit 2; \
 	fi

@@ -8,6 +8,31 @@ define get_container_id
 $$(docker ps -aq --filter name=$(IMAGE_NAME) 2> /dev/null)
 endef
 
+# return the container state; empty string if container does not exist
+define get_container_status
+$$(docker inspect --format="{{.State.Status}}" $(IMAGE_NAME) 2> /dev/null)
+endef
+
+# return 0 if true, 1 if false
+define is_container_running
+$$(test "running" = "$(call get_container_status)"; echo $$?)
+endef
+
+# returns number of container log lines that match provided grep expression
+# e.g.: $(call log_contains,'Version.*3306')
+define log_contains
+$$(docker logs $(IMAGE_NAME) 2>&1 | grep $(1) | wc -l | sed -e 's/^[[:space:]]*//')
+endef
+
+# wait for container logs to contain 1 entry matching the provided grep expression
+# e.g.: $(call wait_till_container_log_contains,'Version.*3306')
+define wait_till_container_log_contains
+@while [ "1" '>' "$(call log_contains,$(1))" ]; do \
+	echo "Waiting for log line containing $(1)"; \
+	sleep 5; \
+done
+endef
+
 .PHONY: all
 all: build ## build the docker image
 
@@ -40,6 +65,17 @@ clean: stop clean_local ## remove all build artifacts
 		docker rmi $(docker images -q -f dangling=true); \
 	fi;
 
+.PHONY: config
+config:
+	@echo "IMAGE_NAME           : $(IMAGE_NAME)"
+	@echo "IMAGE_VER            : $(IMAGE_VER)"
+	@echo "IMAGE                : $(IMAGE)"
+	@echo "RUN_ARGS             : $(RUN_ARGS)"
+	@echo "get_image_id         : $(call get_image_id)"
+	@echo "get_container_id     : $(call get_container_id)"
+	@echo "get_container_status : $(call get_container_status)"
+	@echo "is_container_running : $(call is_container_running)"
+
 .PHONY: create
 create: build ## create a docker container
 	@if [ -z "$(call get_container_id)" ]; then \
@@ -66,12 +102,6 @@ help:
 	@echo
 	@echo "Use: make [target]\n\ntarget:"
 	@grep -h "##" $(MAKEFILE_LIST) | grep -v "(help\|grep)" | grep -ve '^\t' | sort | sed -e "s/:.*## / - /" -e 's/^/  /'
-
-# Useful for debugging or quickly checking build artifacts
-.PHONY: ids
-ids:
-	@echo "get_image_id     : $(call get_image_id)"
-	@echo "get_container_id : $(call get_container_id)"
 
 .PHONY: logs
 logs: ## show container logs
